@@ -5,17 +5,48 @@ def readInputs(filename):
     statePattern = '^estados=q\d(,q\d)*'
     initialStatePattern = '^inicial=q\d'
     finalStatesPattern = '^finais=(q\d)*(,q\d)*'
-    transitionsPattern = '^transicoes\nq\d,q\d,\w(\nq\d,q\d,\w)' #re.match(pattern, string, re.M) to detect newlines
+    transitionsPattern = '^q\d,q\d,\w' #re.match(pattern, string, re.M) to detect newlines
+
+    alphabet = []
+    states = []
+    finalStates = []
+    transitions = []
+    count = 0
 
     with open(filename, 'r') as f:
         for lines in f:
             lines.strip()
-            result = re.search(alphabetPattern, lines)
-            if result:
-                alphabet = result.string
-                alphabet = alphabet.replace('alfabeto=', '')
-                alphabet = alphabet.replace('\n', '')
-                alphabet = alphabet.split(',')
+
+            alphabet_result = re.search(alphabetPattern, lines)
+            states_result = re.search(statePattern, lines)
+            initialState_result = re.search(initialStatePattern, lines)
+            finalStates_result = re.search(finalStatesPattern, lines)
+
+            if alphabet_result and not alphabet:
+                alphabet = alphabet_result.string.replace('alfabeto=', '').replace('\n', '').split(',')
                 print(alphabet)
+            elif states_result and not states:
+                states = states_result.string.replace('estados=', '').replace('\n', '').split(',')
+                print(states)
+            elif initialState_result:
+                initialState = initialState_result.string.replace('inicial=', '').replace('\n', '')
+                print(initialState)
+            elif finalStates_result and not finalStates:
+                finalStates = finalStates_result.string.replace('finais=', '').replace('\n', '').split(',')
+                print(finalStates)
+            elif lines == 'transicoes\n':
+                transitionLines = f.readline()
+                transitionLines = transitionLines[:count+1]
+                for line in f:
+                    line.strip()
+                    if line in transitionLines:
+                        transitions_result = re.search(transitionsPattern, line)
+                        if transitions_result:
+                            transitions.append(transitions_result.string.replace('\n', '').split(','))
+                            #transitions = transitions_result.string.replace('\n', '').split(',')
+                
+                print(transitions)
+            
+            count += 1
 
 readInputs('teste.txt')
