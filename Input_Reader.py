@@ -86,6 +86,7 @@ def readInputs(filename):
 
 
     print('Sucesso na leitura do arquivo')
+    print(transitions)
     return alphabet, states, initialState, finalStates, transitions
 
 readInputs('teste.txt')
