@@ -11,7 +11,6 @@ def readInputs(filename):
     states = []
     finalStates = []
     transitions = []
-    count = 0
 
     with open(filename, 'r') as f:
         for lines in f:
@@ -35,18 +34,14 @@ def readInputs(filename):
                 finalStates = finalStates_result.string.replace('finais=', '').replace('\n', '').split(',')
                 print(finalStates)
             elif lines == 'transicoes\n':
-                transitionLines = f.readline()
-                transitionLines = transitionLines[:count+1]
                 for line in f:
-                    line.strip()
-                    if line in transitionLines:
-                        transitions_result = re.search(transitionsPattern, line)
-                        if transitions_result:
-                            transitions.append(transitions_result.string.replace('\n', '').split(','))
-                            #transitions = transitions_result.string.replace('\n', '').split(',')
+                    transitions_result = re.search(transitionsPattern, line)
+                    if transitions_result:
+                        transitions.append(transitions_result.string.replace('\n', '').split(','))
                 
                 print(transitions)
-            
-            count += 1
+    
+
+    return alphabet, states, initialState, finalStates, transitions
 
 readInputs('teste.txt')
