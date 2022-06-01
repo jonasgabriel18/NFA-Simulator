@@ -1,11 +1,39 @@
 import re
+import time
+
+def errorCheck(alphabet, states, initialState, finalStates, transitions):
+
+    if not alphabet or not states or not initialState or not transitions:
+        print('Alguma entrada está vazia')
+        return True
+    
+    if initialState not in states:
+        print(f'O estado inicial {initialState} não está contido nos estados')
+        return True
+    
+    if not finalStates and finalStates not in states:
+        print(f'Os estados finais {finalStates} não estão contidos nos estados')
+        return True
+
+    for transition in transitions:
+        for i in range(len(transition)):
+            if i == 2:
+                if transition[i] not in alphabet and transition[i] != 'epsilon':
+                    print(f'A transição {transition} é inválida, pois o elemento de transição não está contido no alfabeto')
+                    return True
+            else:
+                if transition[i] not in states:
+                    print(f'A transição {transition} é inválida, pois algum dos estados de transição não está contido nos estados')
+                    return True
+    
+    return False
 
 def readInputs(filename):
     alphabetPattern = '^alfabeto=\w(,\w)*'
     statePattern = '^estados=q\d(,q\d)*'
     initialStatePattern = '^inicial=q\d'
     finalStatesPattern = '^finais=(q\d)*(,q\d)*'
-    transitionsPattern = '^q\d,q\d,\w' #re.match(pattern, string, re.M) to detect newlines
+    transitionsPattern = '^q\d,q\d,\w'
 
     alphabet = []
     states = []
@@ -23,25 +51,25 @@ def readInputs(filename):
 
             if alphabet_result and not alphabet:
                 alphabet = alphabet_result.string.replace('alfabeto=', '').replace('\n', '').split(',')
-                print(alphabet)
             elif states_result and not states:
                 states = states_result.string.replace('estados=', '').replace('\n', '').split(',')
-                print(states)
             elif initialState_result:
                 initialState = initialState_result.string.replace('inicial=', '').replace('\n', '')
-                print(initialState)
             elif finalStates_result and not finalStates:
                 finalStates = finalStates_result.string.replace('finais=', '').replace('\n', '').split(',')
-                print(finalStates)
             elif lines == 'transicoes\n':
                 for line in f:
                     transitions_result = re.search(transitionsPattern, line)
                     if transitions_result:
                         transitions.append(transitions_result.string.replace('\n', '').split(','))
                 
-                print(transitions)
     
+    if errorCheck(alphabet, states, initialState, finalStates, transitions):
+        print('Erro na leitura do arquivo')
+        return None
 
+
+    print('Sucesso na leitura do arquivo')
     return alphabet, states, initialState, finalStates, transitions
 
 readInputs('teste.txt')
