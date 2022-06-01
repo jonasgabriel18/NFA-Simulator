@@ -29,6 +29,12 @@ def errorCheck(alphabet, states, initialState, finalStates, transitions):
     return False
 
 def readInputs(filename):
+
+    if not filename.endswith('.txt'):
+        print(f'O arquivo {filename} não possui o formato .txt')
+        return None
+
+
     alphabetPattern = '^alfabeto=\w(,\w)*'
     statePattern = '^estados=q\d(,q\d)*'
     initialStatePattern = '^inicial=q\d'
@@ -40,28 +46,38 @@ def readInputs(filename):
     finalStates = []
     transitions = []
 
-    with open(filename, 'r') as f:
-        for lines in f:
-            lines.strip()
+    try:
+        with open(filename, 'r') as f: #falta checar se há erro no arquivo passado (se existe, se não for txt etc)
+            for lines in f:
+                lines.strip()
 
-            alphabet_result = re.search(alphabetPattern, lines)
-            states_result = re.search(statePattern, lines)
-            initialState_result = re.search(initialStatePattern, lines)
-            finalStates_result = re.search(finalStatesPattern, lines)
+                alphabet_result = re.search(alphabetPattern, lines)
+                states_result = re.search(statePattern, lines)
+                initialState_result = re.search(initialStatePattern, lines)
+                finalStates_result = re.search(finalStatesPattern, lines)
 
-            if alphabet_result and not alphabet:
-                alphabet = alphabet_result.string.replace('alfabeto=', '').replace('\n', '').split(',')
-            elif states_result and not states:
-                states = states_result.string.replace('estados=', '').replace('\n', '').split(',')
-            elif initialState_result:
-                initialState = initialState_result.string.replace('inicial=', '').replace('\n', '')
-            elif finalStates_result and not finalStates:
-                finalStates = finalStates_result.string.replace('finais=', '').replace('\n', '').split(',')
-            elif lines == 'transicoes\n':
-                for line in f:
-                    transitions_result = re.search(transitionsPattern, line)
-                    if transitions_result:
-                        transitions.append(transitions_result.string.replace('\n', '').split(','))
+                if alphabet_result and not alphabet:
+                    alphabet = alphabet_result.string.replace('alfabeto=', '').replace('\n', '').split(',')
+                elif states_result and not states:
+                    states = states_result.string.replace('estados=', '').replace('\n', '').split(',')
+                elif initialState_result:
+                    initialState = initialState_result.string.replace('inicial=', '').replace('\n', '')
+                elif finalStates_result and not finalStates:
+                    finalStates = finalStates_result.string.replace('finais=', '').replace('\n', '').split(',')
+                elif lines == 'transicoes\n':
+                    for line in f:
+                        transitions_result = re.search(transitionsPattern, line)
+                        if transitions_result:
+                            transitions.append(transitions_result.string.replace('\n', '').split(','))
+    except FileNotFoundError:
+        print(f'O arquivo {filename} não foi encontrado')
+        return None
+    except IOError:
+        print(f'Não foi possível abrir/ler o arquivo {filename}')
+        return None
+    except:
+        print('Erro inesperado')
+        return None
                 
     
     if errorCheck(alphabet, states, initialState, finalStates, transitions):
