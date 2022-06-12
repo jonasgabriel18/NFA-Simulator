@@ -1,5 +1,4 @@
 import re
-import time
 
 def errorCheck(alphabet, states, initialState, finalStates, transitions):
 
@@ -47,7 +46,7 @@ def readInputs(filename):
     transitions = []
 
     try:
-        with open(filename, 'r') as f: #falta checar se há erro no arquivo passado (se existe, se não for txt etc)
+        with open(filename, 'r') as f:
             for lines in f:
                 lines.strip()
 
@@ -87,5 +86,3 @@ def readInputs(filename):
 
     print('Sucesso na leitura do arquivo')
     return alphabet, states, initialState, finalStates, transitions
-
-readInputs('teste.txt')
