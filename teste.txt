@@ -1,7 +1,12 @@
-alfabeto=a,b,c,d
-estados=q0,q1,q2
+alfabeto=a,b
+estados=q0,q1,q2,q3
 inicial=q0
-finais=q1,q2
+finais=q3
 transicoes
-q0,q1,a
+q0,q1,b
+q0,q0,b
+q0,q0,a
+q0,q1,epsilon
 q1,q2,epsilon
+q1,q2,b
+q2,q3,a
