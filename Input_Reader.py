@@ -35,7 +35,7 @@ def readInputs(filename):
         return None
 
 
-    alphabetPattern = '^alfabeto=\w(,\w)*'
+    alphabetPattern = '^alfabeto=(\w(,\w)*)|(\d(,\d)*)'
     statePattern = '^estados=q\d(,q\d)*'
     initialStatePattern = '^inicial=q\d'
     finalStatesPattern = '^finais=(q\d)*(,q\d)*'
@@ -87,5 +87,3 @@ def readInputs(filename):
 
     print('Sucesso na leitura do arquivo')
     return alphabet, states, initialState, finalStates, transitions
-
-readInputs('teste.txt')
