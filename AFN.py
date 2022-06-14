@@ -57,7 +57,7 @@ def processment(initialState, w, transitions, finalStates):
 
     #Check if all of the paths are in their max reach
     for i in range(len(allPaths)):
-        index = len(allPaths[i]) - 1
+        index = len(allPaths[i]) - 1 #currently it only checks the last letter
         if index < len(w):
             possible = findPossibleTransitions(allPaths[i][index], w[index], transitions)
             if type(possible) is list:
@@ -106,6 +106,24 @@ def printPaths(allPaths, w, finalStates):
                 print('\nThis process is accepted by the NFA\n')
         
             count += 1
+        elif len(path) < len(w):
+            print('===================================================')
+            print(f'Starting process {count}')
+            print('===================================================\n')
+
+            for i in range(len(path)):
+                print(f'{path[i]} --------------- {w[i]}')
+                print(arrow)
+                time.sleep(1)
+
+            print(path[-1])
+            if path[-1] not in finalStates:
+                print('\nThis process is not accepted by the NFA\n')
+            else:
+                print('\nThis process is accepted by the NFA\n')
+        
+            count += 1
+
     
 
     print(f'\nFinished processing. It took {time.time() - process_time} seconds\n')
