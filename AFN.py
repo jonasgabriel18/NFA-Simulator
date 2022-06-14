@@ -30,14 +30,14 @@ def processment(initialState, w, transitions, finalStates):
 
     for i in range(len(w)):
 
-        print(f'{currentState} --------------- {w[i]}')
+        #print(f'{currentState} --------------- {w[i]}')
         nextState = findPossibleTransitions(currentState, w[i], transitions)
 
-        if nextState is None:
-            print("Essa cadeia não é aceita")
+        #if nextState is None:
+            #print("Essa cadeia não é aceita")
             #return False
 
-        elif type(nextState) is list:
+        if type(nextState) is list:
             while True:
                 aux = path.copy()
                 aux.append(nextState.pop())
@@ -46,17 +46,17 @@ def processment(initialState, w, transitions, finalStates):
 
                 if not nextState:
                     break
-        else:
+        elif nextState:
             currentState = nextState
             path.append(currentState)
             
-        print(arrow)
-        time.sleep(1)
+        #print(arrow)
+        #time.sleep(1)
     
     path.append(currentState)
-    print(currentState)
+    #print(currentState)
 
-    print(f'\nPath {path}')
+    #print(f'\nPath {path}')
 
     allPaths.append(path)
 
@@ -70,31 +70,55 @@ def processment(initialState, w, transitions, finalStates):
                     aux = allPaths[i].copy()
                     #p has to be removed
                     if len(possible) == 1:
-                        print(f'Removing {allPaths[i]}\n')
+                        #print(f'Removing {allPaths[i]}\n')
                         allPaths.remove(allPaths[i])
-                        
+
                     aux.append(possible.pop())
-                    print(f'\nAppending to allPaths {aux}\n')
+                    #print(f'\nAppending to allPaths {aux}\n')
                     allPaths.append(aux)
 
                     if not possible:
                         break
 
             elif possible:
-                print(f'\nAppending to allPaths {possible}\n')
+                #print(f'\nAppending to allPaths {possible}\n')
                 allPaths[i].append(possible)
 
     #qo, q1, q1 nao esta no seu maximo, então tem q checar com a ultima letra do alfabeto pra ver para onde mais ele pode ir
 
-    print(f'\nAll Paths {allPaths}')
+    #print(f'\nAll Paths {allPaths}')
 
-    #TODO
-    # remove copys?
+    if allPaths:
+        return allPaths
 
-    if currentState not in finalStates:
-        return False
+    return None
 
-    return True
+def printPaths(allPaths, w, finalStates):
+    arrow = u'\u2193' #unicode downwards arrow symbol
+    count = 1
+    process_time = time.time()
+
+    for path in allPaths:
+        if len(path) == len(w):
+            print('===================================================')
+            print(f'Starting processment {count}')
+            print('===================================================\n')
+
+            for i in range(len(w)):
+                print(f'{path[i]} --------------- {w[i]}')
+                print(arrow)
+                time.sleep(1)
+
+            print(path[-1])
+            if path[-1] not in finalStates:
+                print('\nThis process is not accepted by the NFA\n')
+            else:
+                print('\nThis process is accepted by the NFA\n')
+        
+            count += 1
+    
+
+    print(f'\nFinished processing. It took {time.time() - process_time} seconds\n')
 
 def afn(filename):
     alphabet, states, initialState, finalStates, transitions = ir.readInputs(filename)
@@ -107,11 +131,7 @@ def afn(filename):
             print("Cadeia de entrada inválida")
             sys.exit()
     
-    result = processment(initialState, w, transitions, finalStates)
-
-    if result:
-        print("\nSucesso")
-    else:
-        print("\nEssa cadeia não foi aceita pelo autômato")
+    processment_result = processment(initialState, w, transitions, finalStates)
+    printPaths(processment_result, w, finalStates)
 
 afn("teste.txt")
