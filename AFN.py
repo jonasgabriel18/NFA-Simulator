@@ -10,7 +10,9 @@ def findPossibleTransitions(state, char, transitions):
             possibleTransitions.append(transition[1])
             epsilon = findPossibleTransitions(transition[1], 'epsilon', transitions)
             if epsilon != None:
-                    possibleTransitions += epsilon
+                    #print(f'epsilon = {epsilon}\n')
+                    possibleTransitions.append(epsilon)
+                    #print(f'possible transitions apos soma = {possibleTransitions}\n')
     
     if possibleTransitions:
         if len(possibleTransitions) == 1:
@@ -30,18 +32,16 @@ def processment(initialState, w, transitions, finalStates):
 
     for i in range(len(w)):
 
-        #print(f'{currentState} --------------- {w[i]}')
         nextState = findPossibleTransitions(currentState, w[i], transitions)
-
-        #if nextState is None:
-            #print("Essa cadeia não é aceita")
-            #return False
-
+        #print(f'nextState = {nextState}\n')
         if type(nextState) is list:
             while True:
                 aux = path.copy()
+                #print(f'next state = {nextState}\n')
                 aux.append(nextState.pop())
+                #print(f'aux = {aux}\n')
                 currentState = aux[-1]
+                #print(f'current state = {currentState}\n')
                 allPaths.append(aux)
 
                 if not nextState:
@@ -50,13 +50,8 @@ def processment(initialState, w, transitions, finalStates):
             currentState = nextState
             path.append(currentState)
             
-        #print(arrow)
-        #time.sleep(1)
     
     path.append(currentState)
-    #print(currentState)
-
-    #print(f'\nPath {path}')
 
     allPaths.append(path)
 
@@ -70,23 +65,18 @@ def processment(initialState, w, transitions, finalStates):
                     aux = allPaths[i].copy()
                     #p has to be removed
                     if len(possible) == 1:
-                        #print(f'Removing {allPaths[i]}\n')
                         allPaths.remove(allPaths[i])
 
                     aux.append(possible.pop())
-                    #print(f'\nAppending to allPaths {aux}\n')
                     allPaths.append(aux)
 
                     if not possible:
                         break
 
             elif possible:
-                #print(f'\nAppending to allPaths {possible}\n')
                 allPaths[i].append(possible)
 
     #qo, q1, q1 nao esta no seu maximo, então tem q checar com a ultima letra do alfabeto pra ver para onde mais ele pode ir
-
-    #print(f'\nAll Paths {allPaths}')
 
     if allPaths:
         return allPaths
@@ -101,7 +91,7 @@ def printPaths(allPaths, w, finalStates):
     for path in allPaths:
         if len(path) == len(w):
             print('===================================================')
-            print(f'Starting processment {count}')
+            print(f'Starting process {count}')
             print('===================================================\n')
 
             for i in range(len(w)):

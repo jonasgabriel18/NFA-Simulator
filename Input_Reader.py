@@ -34,7 +34,6 @@ def readInputs(filename):
         print(f'O arquivo {filename} não possui o formato .txt')
         return None
 
-
     alphabetPattern = '^alfabeto=(\w(,\w)*)|(\d(,\d)*)'
     statePattern = '^estados=q\d(,q\d)*'
     initialStatePattern = '^inicial=q\d'
