@@ -7,14 +7,11 @@ def findPossibleTransitions(state, char, transitions):
 
     for transition in transitions:
         if state == transition[0] and char == transition[2]:
-            #print('append')
             possibleTransitions.append(transition[1])
-            #epsilon = findPossibleTransitions(transition[1], 'epsilon', transitions)
-            #if epsilon != None:
-                    #possibleTransitions += epsilon
+            epsilon = findPossibleTransitions(transition[1], 'epsilon', transitions)
+            if epsilon != None:
+                    possibleTransitions += epsilon
     
-    #print(f'Possible transitions {possibleTransitions}')
-
     if possibleTransitions:
         if len(possibleTransitions) == 1:
             return possibleTransitions[0]
@@ -25,62 +22,74 @@ def findPossibleTransitions(state, char, transitions):
 
 def processment(initialState, w, transitions, finalStates):
     arrow = u'\u2193'
-    moreWays = False
+  
     allPaths = list()
-    theWays = list()
+    path = list()
+    path.append(initialState)
+    currentState = initialState
+
+    for i in range(len(w)):
+
+        print(f'{currentState} --------------- {w[i]}')
+        nextState = findPossibleTransitions(currentState, w[i], transitions)
+
+        if nextState is None:
+            print("Essa cadeia não é aceita")
+            #return False
+
+        elif type(nextState) is list:
+            while True:
+                aux = path.copy()
+                aux.append(nextState.pop())
+                currentState = aux[-1]
+                allPaths.append(aux)
+
+                if not nextState:
+                    break
+        else:
+            currentState = nextState
+            path.append(currentState)
+            
+        print(arrow)
+        time.sleep(1)
     
-    while True:
-        path = list()
-        path.append(initialState)
-        currentState = initialState
-        for i in range(len(w)):
-            print(f'{currentState} --------------- {w[i]}')
-            nextState = findPossibleTransitions(currentState, w[i], transitions)
-            if nextState is None:
-                print("Essa cadeia não é aceita")
-                #moreWays = False
-                #return False
-            elif type(nextState) is list:
+    path.append(currentState)
+    print(currentState)
 
-                if moreWays:
-                    moreWays = False
-                else:
-                    moreWays = True
+    print(f'\nPath {path}')
 
-                if len(theWays) == 0:
-                    theWays = nextState.copy()
-                    currentState = theWays.pop(0)
+    allPaths.append(path)
 
-                if len(theWays) == 0:
-                    theWays.clear()
-                    moreWays = False
+    #Check if all of the paths are in their max reach
+    for i in range(len(allPaths)):
+        index = len(allPaths[i]) - 1
+        if index < len(w):
+            possible = findPossibleTransitions(allPaths[i][index], w[index], transitions)
+            if type(possible) is list:
+                while True:
+                    aux = allPaths[i].copy()
+                    #p has to be removed
+                    if len(possible) == 1:
+                        print(f'Removing {allPaths[i]}\n')
+                        allPaths.remove(allPaths[i])
+                        
+                    aux.append(possible.pop())
+                    print(f'\nAppending to allPaths {aux}\n')
+                    allPaths.append(aux)
 
-                path.append(currentState)
-            else:
-                currentState = nextState
-                path.append(currentState)
-                moreWays = False
+                    if not possible:
+                        break
 
-            print(arrow)
-            time.sleep(1)
-        
-        print(currentState)
+            elif possible:
+                print(f'\nAppending to allPaths {possible}\n')
+                allPaths[i].append(possible)
 
-        print(f'\nPath {path}')
-
-        allPaths.append(path)
-
-        if not moreWays:
-            break
-
-
-    # TODO
-    # Ok, na teoria, esta função deve retornar o all paths, e outra deve ser responsavel por printar
-    # farei isso depois.
-    # implementar transicoes epsilon (vamo meu jocat)
-    # a dinamica se houver mais de um estado inicial deve ser diferente também.
+    #qo, q1, q1 nao esta no seu maximo, então tem q checar com a ultima letra do alfabeto pra ver para onde mais ele pode ir
 
     print(f'\nAll Paths {allPaths}')
+
+    #TODO
+    # remove copys?
 
     if currentState not in finalStates:
         return False
