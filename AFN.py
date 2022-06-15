@@ -3,8 +3,7 @@ import time
 import sys
 
 #TODO
-#investigar pq no afn do exemplo 3 não foi possivel ter mais de 1 estado inicial
-#checar epsilons aninhados agora nos estados iniciais (sinceramente nem lembro o que é isso)
+#pequeno bug em que, por exemplo, há dois caminhos corretos, um na vdd é mais correto
     
 def findPossibleTransitions(state, char, transitions):
     possibleTransitions = [] #antigo 'a'
@@ -17,7 +16,6 @@ def findPossibleTransitions(state, char, transitions):
                     if type(epsilon) is list:
                         while epsilon:
                             possibleTransitions.append(epsilon.pop(0))
-                            print(f'Appending epsilon {possibleTransitions[-1]}')
                     else:
                         possibleTransitions.append(epsilon)
 
@@ -41,7 +39,12 @@ def findOtherInitialStates(initialState, transitions):
         if epsilon_ini is None:
             break
 
-        initialStates.append(epsilon_ini)
+        if type(epsilon_ini) is list:
+            while epsilon_ini:
+                initialStates.append(epsilon_ini.pop(0))
+        else:
+            initialStates.append(epsilon_ini)
+
         aux = [epsilon_ini]
         
     return initialStates
@@ -53,16 +56,19 @@ def processment(initialState, w, transitions, finalStates):
     path = list()
    
     inStates = findOtherInitialStates(initialState, transitions)
+    #print(inStates)
 
     while inStates:
+        path.clear()
         currentState = inStates.pop(0)
         path.append(currentState)
         
         for i in range(len(w)):
             nextState = findPossibleTransitions(currentState, w[i], transitions)
+
             if type(nextState) is list:
                 while True:
-                    aux = path.copy()
+                    aux = path.copy() #TODO maybe the path needs to be removed as well 
                     aux.append(nextState.pop())
                     currentState = aux[-1]
                     allPaths.append(aux)
@@ -73,8 +79,10 @@ def processment(initialState, w, transitions, finalStates):
             elif nextState:
                 currentState = nextState
                 path.append(currentState)
+            else:
+                break
                 
-        path.append(currentState)
+        #path.append(currentState)
         allPaths.append(path)
 
 
@@ -83,6 +91,8 @@ def processment(initialState, w, transitions, finalStates):
         while len(allPaths[i]) <= len(w):
             index = len(allPaths[i]) - 1 #currently it only checks the last letter
             possible = findPossibleTransitions(allPaths[i][index], w[index], transitions)
+            #print(f'Possible = {possible}\nIndex = {index}\n')
+            #print(allPaths[i])
             if type(possible) is list:
                 while True:
                     aux = allPaths[i].copy()
@@ -92,6 +102,7 @@ def processment(initialState, w, transitions, finalStates):
                         
                     aux.append(possible.pop())
                     allPaths.append(aux)
+                    #print(f'Path appended hamina hamina {aux}\n')
 
                     if not possible:
                         break
@@ -117,6 +128,8 @@ def processment(initialState, w, transitions, finalStates):
                         break
             elif lastReach:
                 allPaths[i].append(lastReach)
+            else:
+                break
 
     if allPaths:
         return allPaths
@@ -151,6 +164,7 @@ def printPaths(allPaths, w, finalStates):
 
             if path[-1] not in finalStates:
                 print('\t' + path[-1])
+                print(f'\t{arrow}')
                 print('\tX')
                 print('\nThis process is not accepted by the NFA\n')
             else:
@@ -192,3 +206,9 @@ def afn(filename):
         print('\033[1;31mCadeia negada pelo automato!\n')
 
 afn("teste.txt")
+
+#Examplos testados:
+    # Slides 2 de AFN:
+        # 5 
+        # 4
+        # exercicio p entrega
