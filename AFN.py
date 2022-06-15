@@ -1,6 +1,10 @@
 import Input_Reader as ir
 import time
 import sys
+
+#TODO
+#investigar pq no afn do exemplo 3 não foi possivel ter mais de 1 estado inicial
+#checar epsilons aninhados agora nos estados iniciais (sinceramente nem lembro o que é isso)
     
 def findPossibleTransitions(state, char, transitions):
     possibleTransitions = [] #antigo 'a'
@@ -49,19 +53,13 @@ def processment(initialState, w, transitions, finalStates):
     path = list()
    
     inStates = findOtherInitialStates(initialState, transitions)
-    #print(inStates)
 
     while inStates:
         currentState = inStates.pop(0)
         path.append(currentState)
         
-        #TODO
-        #investigar pq no afn do exemplo 3 não foi possivel ter mais de 1 estado inicial
-
         for i in range(len(w)):
             nextState = findPossibleTransitions(currentState, w[i], transitions)
-            #print(currentState)
-            #print(nextState)
             if type(nextState) is list:
                 while True:
                     aux = path.copy()
@@ -80,7 +78,6 @@ def processment(initialState, w, transitions, finalStates):
         allPaths.append(path)
 
 
-    print(allPaths)
     #Check if all of the paths are in their max reach
     for i in range(len(allPaths)):
         while len(allPaths[i]) <= len(w):
@@ -103,12 +100,35 @@ def processment(initialState, w, transitions, finalStates):
                 allPaths[i].append(possible)
             else:
                 break
+    
 
-    print(allPaths)
+    #it was noticed that some of the paths were on their max-1 reach, so is necessary to repeat the process for some of the paths
+
+    for i in range(len(allPaths)):
+        if len(allPaths[i]) >= len(w):
+            lastReach = findPossibleTransitions(allPaths[i][-1], w[-1], transitions)
+            if type(lastReach) is list:
+                while True:
+                    aux = allPaths[i].copy()
+                    aux.append(lastReach.pop(0))
+                    allPaths.append(aux)
+
+                    if not lastReach:
+                        break
+            elif lastReach:
+                allPaths[i].append(lastReach)
+
     if allPaths:
         return allPaths
 
     return None
+
+def dropDuplicates(allPaths):
+    aux = []
+    for i in range(len(allPaths)):
+        if allPaths[i] not in aux:
+            aux.append(allPaths[i])
+    return aux
 
 def printPaths(allPaths, w, finalStates):
     arrow = u'\u2193' #unicode downwards arrow symbol
@@ -116,11 +136,7 @@ def printPaths(allPaths, w, finalStates):
     process_time = time.time()
     isAccepted = False
 
-    #TODO
-    #limpeza no allPaths:
-    #tirar duplicatas
-    #checar os caminhos
-    #checar epsilons aninhados agora nos estados iniciais
+    allPaths = dropDuplicates(allPaths)
 
     for path in allPaths:
         print('===================================================')
@@ -134,6 +150,7 @@ def printPaths(allPaths, w, finalStates):
                 time.sleep(0.8)
 
             if path[-1] not in finalStates:
+                print('\t' + path[-1])
                 print('\tX')
                 print('\nThis process is not accepted by the NFA\n')
             else:
