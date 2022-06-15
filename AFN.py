@@ -9,10 +9,14 @@ def findPossibleTransitions(state, char, transitions):
         if state == transition[0] and char == transition[2]:
             possibleTransitions.append(transition[1])
             epsilon = findPossibleTransitions(transition[1], 'epsilon', transitions)
-            if epsilon != None:
-                    #print(f'epsilon = {epsilon}\n')
-                    possibleTransitions.append(epsilon)
-                    #print(f'possible transitions apos soma = {possibleTransitions}\n')
+            if epsilon:
+                    if type(epsilon) is list:
+                        while epsilon:
+                            possibleTransitions.append(epsilon.pop(0))
+                            print(f'Appending epsilon {possibleTransitions[-1]}')
+                    else:
+                        possibleTransitions.append(epsilon)
+
     
     if possibleTransitions:
         if len(possibleTransitions) == 1:
@@ -43,38 +47,30 @@ def processment(initialState, w, transitions, finalStates):
   
     allPaths = list()
     path = list()
-    #path.append(initialState)
-    #currentState = initialState
    
     inStates = findOtherInitialStates(initialState, transitions)
-    print(inStates)
+    #print(inStates)
 
     while inStates:
         currentState = inStates.pop(0)
-        #print(f'popadas {currentState}')
-        #path.append(currentState)
 
         for i in range(len(w)):
-
             nextState = findPossibleTransitions(currentState, w[i], transitions)
-            #print(f'nextState = {nextState}\n')
+
             if type(nextState) is list:
                 while True:
                     aux = path.copy()
-                    #print(f'next state = {nextState}\n')
                     aux.append(nextState.pop())
-                    #print(f'aux = {aux}\n')
                     currentState = aux[-1]
-                    #print(f'current state = {currentState}\n')
                     allPaths.append(aux)
 
                     if not nextState:
                         break
+
             elif nextState:
                 currentState = nextState
                 path.append(currentState)
                 
-        
         path.append(currentState)
 
         allPaths.append(path)
@@ -100,8 +96,6 @@ def processment(initialState, w, transitions, finalStates):
             elif possible:
                 allPaths[i].append(possible)
 
-    #qo, q1, q1 nao esta no seu maximo, então tem q checar com a ultima letra do alfabeto pra ver para onde mais ele pode ir
-
     if allPaths:
         return allPaths
 
@@ -109,7 +103,7 @@ def processment(initialState, w, transitions, finalStates):
 
 def printPaths(allPaths, w, finalStates):
     arrow = u'\u2193' #unicode downwards arrow symbol
-    count = 1
+    process_counter = 1
     process_time = time.time()
     isAccepted = False
 
@@ -117,32 +111,28 @@ def printPaths(allPaths, w, finalStates):
     #limpeza no allPaths:
     #tirar duplicatas
     #checar os caminhos
+    #checar epsilons aninhados
 
     for path in allPaths:
-        if len(path) >= len(w):
-            print('===================================================')
-            print(f'\tStarting process {count}')
-            print('===================================================\n')
+        print('===================================================')
+        print(f'\tStarting process {process_counter}')
+        print('===================================================\n')
 
+        if len(path) >= len(w):
             for i in range(len(w)):
                 print(f'\t{path[i]} --------------- {w[i]}')
                 print(f'\t{arrow}')
                 time.sleep(0.8)
 
-            #print('\t' + path[-1])
             if path[-1] not in finalStates:
                 print('\tX')
                 print('\nThis process is not accepted by the NFA\n')
             else:
+                print('\t' + path[-1])
                 print('\nThis process is accepted by the NFA\n')
                 isAccepted = True
         
-            count += 1
         elif len(path) < len(w):
-            print('===================================================')
-            print(f'\tStarting process {count}')
-            print('===================================================\n')
-
             for i in range(len(path)):
                 print(f'\t{path[i]} --------------- {w[i]}')
                 print(f'\t{arrow}')
@@ -151,7 +141,7 @@ def printPaths(allPaths, w, finalStates):
             print('\tX')
             print('\nThis process is not accepted by the NFA\n')
         
-            count += 1
+        process_counter += 1
 
     print(f'\nFinished processing. It took {time.time() - process_time} seconds\n')
 
@@ -171,8 +161,8 @@ def afn(filename):
     processment_result = processment(initialState, w, transitions, finalStates)
 
     if printPaths(processment_result, w, finalStates):
-        print('Essa cadeia é aceita pelo automâto')
+        print('\033[1;32mCadeia aceita pelo automato!\n')
     else:
-        print('Essa cadeia não é aceita pelo automâto')
+        print('\033[1;31mCadeia negada pelo automato!\n')
 
 afn("teste.txt")
