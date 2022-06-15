@@ -53,10 +53,15 @@ def processment(initialState, w, transitions, finalStates):
 
     while inStates:
         currentState = inStates.pop(0)
+        path.append(currentState)
+        
+        #TODO
+        #investigar pq no afn do exemplo 3 não foi possivel ter mais de 1 estado inicial
 
         for i in range(len(w)):
             nextState = findPossibleTransitions(currentState, w[i], transitions)
-
+            #print(currentState)
+            #print(nextState)
             if type(nextState) is list:
                 while True:
                     aux = path.copy()
@@ -72,13 +77,14 @@ def processment(initialState, w, transitions, finalStates):
                 path.append(currentState)
                 
         path.append(currentState)
-
         allPaths.append(path)
 
+
+    print(allPaths)
     #Check if all of the paths are in their max reach
     for i in range(len(allPaths)):
-        index = len(allPaths[i]) - 1 #currently it only checks the last letter
-        if index < len(w):
+        while len(allPaths[i]) <= len(w):
+            index = len(allPaths[i]) - 1 #currently it only checks the last letter
             possible = findPossibleTransitions(allPaths[i][index], w[index], transitions)
             if type(possible) is list:
                 while True:
@@ -86,7 +92,7 @@ def processment(initialState, w, transitions, finalStates):
                     #p has to be removed
                     if len(possible) == 1:
                         allPaths.remove(allPaths[i])
-
+                        
                     aux.append(possible.pop())
                     allPaths.append(aux)
 
@@ -95,7 +101,10 @@ def processment(initialState, w, transitions, finalStates):
 
             elif possible:
                 allPaths[i].append(possible)
+            else:
+                break
 
+    print(allPaths)
     if allPaths:
         return allPaths
 
@@ -111,7 +120,7 @@ def printPaths(allPaths, w, finalStates):
     #limpeza no allPaths:
     #tirar duplicatas
     #checar os caminhos
-    #checar epsilons aninhados
+    #checar epsilons aninhados agora nos estados iniciais
 
     for path in allPaths:
         print('===================================================')
