@@ -173,6 +173,7 @@ def processment(initialState, w, transitions):
     return None
 
 # dropDuplicates() remove os caminhos repetidos, 'limpando' o processamento na hora de ser impresso
+#
 # Params:
 #   allPaths: lista aninhada com todos os caminhos
 #
@@ -184,6 +185,23 @@ def dropDuplicates(allPaths):
     for i in range(len(allPaths)):
         if allPaths[i] not in noDuplicates:
             noDuplicates.append(allPaths[i])
+    return noDuplicates
+
+# dropOverlengthPaths() remove caminhos que possuem caminhos excessivos, já que na teoria não era para eles existirem.
+#
+# Params:
+#   allPaths: lista aninhada com todos os caminhos
+#   w: cadeia de entrada
+#
+# Return:
+#   Retorna os caminhos tratados
+
+def dropOverlengthPaths(allPaths, w):
+    noDuplicates = allPaths.copy()
+    for path in noDuplicates:
+        while len(path) > len(w) + 1:
+            path.pop()
+    
     return noDuplicates
 
 # printPaths() exibe no terminal todos os processamentos calculados.
@@ -202,6 +220,7 @@ def printPaths(allPaths, w, finalStates):
     process_counter = 1
     isAccepted = False
 
+    allPaths = dropOverlengthPaths(allPaths, w)
     allPaths = dropDuplicates(allPaths)
 
     for path in allPaths:
