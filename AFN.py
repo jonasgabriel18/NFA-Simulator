@@ -2,9 +2,6 @@ import Input_Reader as ir
 import time
 import sys
 
-#TODO
-#pequeno bug em que alguns caminhos estão 'pulando' um estado
-
 # findPossibleTransitions() busca os estados para onde se pode ir levando em conta o caractere lido pelo automâto e o estado atual.
 # A função também busca transições com a cadeia vazia (epsilon) via uso de recursão
 #
@@ -285,4 +282,4 @@ def afn(filename):
     else:
         print('\033[1;31mCadeia negada pelo automato!\n')
 
-afn("ex5.txt")
+afn("ex3.txt")
