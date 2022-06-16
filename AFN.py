@@ -282,4 +282,9 @@ def afn(filename):
     else:
         print('\033[1;31mCadeia negada pelo automato!\n')
 
-afn("ex3.txt")
+def main():
+    filename = input("Insira o nome do arquivo a ser lido (digite '.txt' ao final do nome): ")
+    afn(filename)
+
+if __name__ == '__main__':
+    main()
