@@ -3,10 +3,10 @@ import time
 import sys
 
 #TODO
-#pequeno bug em que, por exemplo, há dois caminhos corretos, um na vdd é mais correto
+#pequeno bug em que alguns caminhos estão 'pulando' um estado
     
 def findPossibleTransitions(state, char, transitions):
-    possibleTransitions = [] #antigo 'a'
+    possibleTransitions = []
 
     for transition in transitions:
         if state == transition[0] and char == transition[2]:
@@ -19,7 +19,6 @@ def findPossibleTransitions(state, char, transitions):
                     else:
                         possibleTransitions.append(epsilon)
 
-    
     if possibleTransitions:
         if len(possibleTransitions) == 1:
             return possibleTransitions[0]
@@ -56,7 +55,6 @@ def processment(initialState, w, transitions, finalStates):
     path = list()
    
     inStates = findOtherInitialStates(initialState, transitions)
-    #print(inStates)
 
     while inStates:
         path.clear()
@@ -68,7 +66,7 @@ def processment(initialState, w, transitions, finalStates):
 
             if type(nextState) is list:
                 while True:
-                    aux = path.copy() #TODO maybe the path needs to be removed as well 
+                    aux = path.copy()
                     aux.append(nextState.pop())
                     currentState = aux[-1]
                     allPaths.append(aux)
@@ -82,27 +80,23 @@ def processment(initialState, w, transitions, finalStates):
             else:
                 break
                 
-        #path.append(currentState)
         allPaths.append(path)
 
 
     #Check if all of the paths are in their max reach
     for i in range(len(allPaths)):
         while len(allPaths[i]) <= len(w):
-            index = len(allPaths[i]) - 1 #currently it only checks the last letter
+            index = len(allPaths[i]) - 1
             possible = findPossibleTransitions(allPaths[i][index], w[index], transitions)
-            #print(f'Possible = {possible}\nIndex = {index}\n')
-            #print(allPaths[i])
             if type(possible) is list:
                 while True:
                     aux = allPaths[i].copy()
-                    #p has to be removed
+                    #Old path must be removed
                     if len(possible) == 1:
                         allPaths.remove(allPaths[i])
                         
                     aux.append(possible.pop())
                     allPaths.append(aux)
-                    #print(f'Path appended hamina hamina {aux}\n')
 
                     if not possible:
                         break
@@ -112,41 +106,42 @@ def processment(initialState, w, transitions, finalStates):
             else:
                 break
     
-
     #it was noticed that some of the paths were on their max-1 reach, so is necessary to repeat the process for some of the paths
-
     for i in range(len(allPaths)):
         if len(allPaths[i]) >= len(w):
             lastReach = findPossibleTransitions(allPaths[i][-1], w[-1], transitions)
             if type(lastReach) is list:
                 while True:
                     aux = allPaths[i].copy()
-                    aux.append(lastReach.pop(0))
+
+                    if len(lastReach) == 1:
+                        allPaths.remove(allPaths[i])
+
+                    aux.append(lastReach.pop())
                     allPaths.append(aux)
 
                     if not lastReach:
                         break
+
             elif lastReach:
                 allPaths[i].append(lastReach)
-            else:
-                break
-
+    
     if allPaths:
         return allPaths
 
     return None
 
+#Drop duplicated paths
 def dropDuplicates(allPaths):
-    aux = []
+    noDuplicates = []
     for i in range(len(allPaths)):
-        if allPaths[i] not in aux:
-            aux.append(allPaths[i])
-    return aux
+        if allPaths[i] not in noDuplicates:
+            noDuplicates.append(allPaths[i])
+    return noDuplicates
 
 def printPaths(allPaths, w, finalStates):
     arrow = u'\u2193' #unicode downwards arrow symbol
     process_counter = 1
-    process_time = time.time()
     isAccepted = False
 
     allPaths = dropDuplicates(allPaths)
@@ -183,7 +178,7 @@ def printPaths(allPaths, w, finalStates):
         
         process_counter += 1
 
-    print(f'\nFinished processing. It took {time.time() - process_time} seconds\n')
+    print(f'\nFinished processing.')
 
     return isAccepted
 
@@ -205,10 +200,11 @@ def afn(filename):
     else:
         print('\033[1;31mCadeia negada pelo automato!\n')
 
-afn("teste.txt")
+afn("ex5.txt")
 
 #Examplos testados:
     # Slides 2 de AFN:
         # 5 
         # 4
         # exercicio p entrega
+    #Boladao de joca
