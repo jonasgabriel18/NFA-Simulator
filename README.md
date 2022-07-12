@@ -10,8 +10,8 @@ This is the final project of Authomata Theory, given by professor Bruno Bruck. T
 ## How to use
 To use the simulator, first you will need a file .txt containing the specific format:
 
-  `alfabeto=a,b,c`\n
-  `estados=q0,q1,q2`
+  `alfabeto=a,b,c`\
+  `estados=q0,q1,q2`\
   `inicial=q0`
   `finais=q4`
   `transicoes`
