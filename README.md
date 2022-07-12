@@ -17,7 +17,7 @@ To use the simulator, first you will need a file .txt containing the specific fo
   `transicoes`\
   `q0,q1,a`\
   `q1,q2,b`\
-  `q1,q2,epsilon`\
+  `q1,q2,epsilon`
    
 Where "alfabeto" stands to authomata alphabet, "estados" to his states, "inicial" to the initial state, "finais" to the final state (can be more than one) and "transicoes" to all the authomata transitions, including epsilon transitions.
 
