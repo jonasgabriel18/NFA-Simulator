@@ -229,7 +229,7 @@ def printPaths(allPaths, w, finalStates):
             for i in range(len(w)):
                 print(f'\t{path[i]} --------------- {w[i]}')
                 print(f'\t{arrow}')
-                time.sleep(0.8)
+                time.sleep(0.5)
 
             if path[-1] not in finalStates:
                 print('\t' + path[-1])
@@ -245,7 +245,7 @@ def printPaths(allPaths, w, finalStates):
             for i in range(len(path)):
                 print(f'\t{path[i]} --------------- {w[i]}')
                 print(f'\t{arrow}')
-                time.sleep(0.8)
+                time.sleep(0.5)
 
             print('\tX')
             print('\nThis process is not accepted by the NFA\n')
