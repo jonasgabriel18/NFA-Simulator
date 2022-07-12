@@ -86,7 +86,11 @@ def readInputs(filename):
     transitions = list()
 
     try:
+<<<<<<< HEAD
         with open(filename, 'r') as f: # Abertura do arquivo para leitura
+=======
+        with open(filename, 'r') as f:
+>>>>>>> main
             for lines in f:
                 lines.strip()
 
@@ -124,4 +128,8 @@ def readInputs(filename):
 
     print('Sucesso na leitura do arquivo\n')
 
+<<<<<<< HEAD
+=======
+    print('Sucesso na leitura do arquivo')
+>>>>>>> main
     return alphabet, states, initialState, finalStates, transitions
