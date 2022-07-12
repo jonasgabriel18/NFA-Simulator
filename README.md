@@ -2,12 +2,12 @@
 This is the final project of Authomata Theory, given by professor Bruno Bruck. The project is a Non-deterministic Finite Authomata Simulator, made by the students Jonas Gabriel and João Henrique.
 
 ## Installation
-- `1`: On this repository, click on "code" and copy the HTTPS link.
-- `2`: Clone the repository to a folder usign Git bash.
-- `3`: Make sure that you have Python 3 installed in your machine.
-- `4`: Open a terminal and type "python3 AFN.py".
+- `1: On this repository, click on "code" and copy the HTTPS link.`
+- `2: Clone the repository to a folder usign Git bash.`
+- `3: Make sure that you have Python 3 installed in your machine.`
+- `4: Open a terminal and type "python3 AFN.py".`
 
-##How to use
+## How to use
 To use the simulator, first you will need a file .txt containing the specific format:
 
   `alfabeto=a,b,c
